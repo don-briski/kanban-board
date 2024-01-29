@@ -1,0 +1,100 @@
+{
+  "boards": [
+    {
+      "id": "1",
+      "name": "Test Board",
+      "columns": [
+        {
+          "name": "OPEN",
+          "tasks": [
+            {
+              "id": 3,
+              "title": "Go home",
+              "description": "...",
+              "dueDate": "2024-01-30",
+              "status": "IN-PROGRESS"
+            },
+            {
+              "id": 4,
+              "title": "Fall asleep",
+              "description": "...",
+              "dueDate": "2024-01-30",
+              "status": "IN-PROGRESS"
+            }
+          ]
+        },
+        {
+          "name": "PENDING",
+          "tasks": []
+        },
+        {
+          "name": "IN-PROGRESS",
+          "tasks": [
+            {
+              "id": 1,
+              "title": "Get to workings",
+              "description": "...",
+              "dueDate": "2024-01-30",
+              "status": "IN-PROGRESS"
+            },
+            {
+              "id": 2,
+              "title": "Pick up groceries",
+              "description": "...",
+              "dueDate": "2024-01-30",
+              "status": "IN-PROGRESS"
+            },
+            {
+              "id": 3,
+              "title": "Go home",
+              "description": "...",
+              "dueDate": "2024-01-30",
+              "status": "IN-PROGRESS"
+            },
+            {
+              "id": 4,
+              "title": "Fall asleep",
+              "description": "...",
+              "dueDate": "2024-01-30",
+              "status": "IN-PROGRESS"
+            }
+          ]
+        },
+        {
+          "name": "COMPLETED",
+          "tasks": []
+        }
+      ]
+    },
+    {
+      "id": "bf58",
+      "title": "john",
+      "description": "info",
+      "dueDate": "2024-01-30T23:00:00.000Z"
+    },
+    {
+      "id": "3713",
+      "title": "hello",
+      "description": "added card to the open column",
+      "dueDate": "2024-01-30T23:00:00.000Z"
+    },
+    {
+      "id": "eee1",
+      "title": "jeting ",
+      "description": "jettin schol",
+      "dueDate": "2024-02-07T23:00:00.000Z"
+    },
+    {
+      "id": "015c",
+      "title": "Add task",
+      "description": "testing.....",
+      "dueDate": "2024-01-30T23:00:00.000Z"
+    },
+    {
+      "id": "e374",
+      "title": "ght",
+      "description": "4566",
+      "dueDate": "2024-01-09T23:00:00.000Z"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+<div class="section">
+  <h2 mat-dialog-title> New Task</h2>
+  <mat-dialog-content>
+    <form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="outline">
+        <input matInput placeholder="Title" formControlName="title" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <input matInput min="today" placeholder="Due Date" formControlName="dueDate" [matDatepicker]="picker">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field>
+        <textarea matInput placeholder="Description" formControlName="description" rows="5" cols="5"></textarea>
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-button (click)="onSubmit()">Create Task</button>
+  </mat-dialog-actions>
+</div>
+
+
+
