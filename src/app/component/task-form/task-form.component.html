@@ -7,7 +7,7 @@
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <input matInput min="today" placeholder="Due Date" formControlName="dueDate" [matDatepicker]="picker">
+        <input matInput min="today" placeholder="Due Date" (change)="dateFormater($event)" formControlName="dueDate" [matDatepicker]="picker">
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>

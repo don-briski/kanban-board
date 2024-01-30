@@ -10,41 +10,24 @@ import { Task } from '../model/task'; // Update the path
 
 
 export class TaskServiceService {
-  private baseUrl = 'http://localhost:3000/boards';  //http://localhost:3000/boards/1/columns/0/task
+  private baseUrl = 'http://localhost:3000'; // Update the URL according to your backend
 
   constructor(private http: HttpClient) {}
 
-  getTasks(): Observable<Task> {
-    return this.http.get<Task>(`${this.baseUrl}`).pipe(
-      map((res) => {
-        console.log(res);
-        return res;
-      })
-
-    );
+  getTasksObj(): Observable<Task[]> {
+    return this.http.get<Task[]>(`${this.baseUrl}/taskObj`);
   }
 
-  addTask(task: Task) {
-   return this.http.post<any>(`${this.baseUrl}`, task)
-    .pipe(
-      map((res) => {
-        console.log(res, 'result, list');
-        return res
-      })
-    )
-
+  addOTaskObj(task: Task): Observable<Task> {
+    return this.http.post<Task>(`${this.baseUrl}/taskObj`, task);
   }
 
-  editTask(task: Task, columnIndex: number): Observable<any> {
-    return this.http.put<any>(
-      `${this.baseUrl}/${task.id}`,
-      task
-    );
+  editTaskObj(task: Task): Observable<Task> {
+    return this.http.put<Task>(`${this.baseUrl}/taskObj/${task.id}`, task);
   }
 
-  deleteTask(task: Task, columnIndex: number): Observable<void> {
-    return this.http.delete<void>(
-      `${this.baseUrl}/${task.id}`
-    );
+  deleteTaskObj(task: Task): Observable<void> {
+    const url = `${this.baseUrl}/taskObj/${task.id}`;
+    return this.http.delete<void>(url);
   }
 }

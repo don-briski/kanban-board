@@ -31,7 +31,8 @@ export class TaskFormComponent implements OnInit {
       this.taskForm = new FormGroup({
         title: new FormControl('', [Validators.required]),
         description: new FormControl('',),
-        dueDate: new FormControl('', [Validators.required])
+        dueDate: new FormControl('', [Validators.required]),
+        status: new FormControl('OPEN', )
       });
 
   }
@@ -45,4 +46,11 @@ export class TaskFormComponent implements OnInit {
   onCancel(): void {
     this.dialogRef.close();
   }
+
+  dateFormater(event: any) {
+    const date = event.value;
+    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+  }
+
+  
 }

@@ -23,34 +23,81 @@ export class KanbanBoardComponent implements OnInit {
   editTask!: TemplateRef<any>;
   editTaskForm: any;
   dialogRef!: MatDialogRef<any>;
-  board!: Board;
+  board: Board = {
+    name: '',
+    columns: []
+  };
+
+
 
   constructor(private dialog: MatDialog, private taskService: TaskServiceService) {}
 
   ngOnInit() {
-    this.getTaskdata();
+    this.board = {
+      name: 'Task Board',
+      columns: [
+        {
+          name: 'OPEN',
+          tasks: [],
+        },
+        {
+          name: 'PENDING',
+          tasks: [],
+        },
+        {
+          name: 'IN PROGRESS',
+          tasks: [],
+        },
+        {
+          name: 'DONE',
+          tasks: [],
+        },
+      ],
+    };
+
+    this.getTaskData();
 
     this.editTaskForm = new FormGroup({
       title: new FormControl(null, [Validators.required]),
       description: new FormControl(null),
       dueDate: new FormControl(null, [Validators.required]),
+      status: new FormControl(null), // Include status in the form
+    });
+
+
+  }
+
+
+  getTaskData(): void {
+    this.taskService.getTasksObj().subscribe((data: any) => {
+      console.log('Server Response:', data);
+
+      if (data ) {
+        const organizedTasks = this.organizeTasks(data);
+        this.board.columns.forEach((column) => {
+          const status = column.name.toUpperCase();
+          column.tasks = organizedTasks[status] || [];
+        });
+      } else {
+        console.error('Error: Task data or taskObj is undefined.');
+      }
     });
   }
 
 
-  getTaskdata(): void {
-    this.taskService.getTasks().subscribe((data: any) => {
-      console.log(data);
-      const boardData = data[0];
-      console.log(boardData);
-      this.board = new Board(boardData.name, boardData.columns.map((column: any) => {
-        return new Column(column.name, column.tasks.map((task: any) => {
-          return new Tasks(task.id, task.title, task.description, task.dueDate, task.status);
-        }
-        ));
+
+  organizeTasks(tasks: Task[]): { [key: string]: Task[] } {
+    const organizedTasks: { [key: string]: Task[] } = {};
+
+    tasks.forEach((task) => {
+      const status = task.status.toUpperCase();
+      if (!organizedTasks[status]) {
+        organizedTasks[status] = [];
       }
-      ));
+      organizedTasks[status].push({ ...task });
     });
+
+    return organizedTasks;
   }
 
   drop(event: CdkDragDrop<Task[]>) {
@@ -66,6 +113,7 @@ export class KanbanBoardComponent implements OnInit {
     }
   }
 
+
   openNewTaskDialog(): void {
     const dialogRef = this.dialog.open(TaskFormComponent, {
       width: '400px',
@@ -73,41 +121,46 @@ export class KanbanBoardComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-
-        // Get the index of the "OPEN" column
-        const openColumnIndex = this.board?.columns?.findIndex((column) => column.name === 'OPEN');
-
-        console.log(this.board, 'our board');
+        const openColumnIndex = this.board?.columns.findIndex((column) => column.name === 'OPEN');
 
         if (openColumnIndex !== -1) {
-          // Add the new task to the "OPEN" column
-          this.taskService.addTask(result).subscribe(() => {
-            openColumnIndex !== -1 && this.board?.columns[openColumnIndex].tasks.push(result);
-            
-            this.getTaskdata(); // This will refresh the data, including the new task
+          // Update the status of the task before adding it to the column
+          result.status = 'OPEN';
+
+          this.taskService.addOTaskObj(result).subscribe({
+            next: (createdTask: Task) => {
+              this.board?.columns[openColumnIndex].tasks.push(createdTask);
+
+              // Optionally, you can move the task to the open column on the UI
+              // this.moveTaskToOpenColumn(createdTask);
+
+              // Refresh the data
+              this.getTaskData();
+            },
+            error: (error: any) => {
+              console.error('Error creating task:', error);
+            },
           });
-        } else {
-          console.error('The "OPEN" column was not found.');
         }
       }
     });
   }
 
 
-  openEditTaskDialog(task: Task): void {
-    this.task = task;
 
+ openEditTaskDialog(task: Task): void {
     this.editTaskForm.patchValue({
       title: task.title,
       description: task.description,
       dueDate: task.dueDate,
+      status: task.status,
     });
 
     const dialogRef = this.dialog.open(this.editTask, {
       width: '400px',
       data: {
         task,
-        isEdit: true,
+        editTaskForm: this.editTaskForm,
       },
     });
 
@@ -115,21 +168,24 @@ export class KanbanBoardComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        const columnIndex = this.board?.columns?.findIndex((column) =>
-          column.tasks.includes(task)
-        );
-        this.taskService.editTask(result, columnIndex).subscribe(() => {
-          this.getTaskdata();
+        Object.assign(task, result);
+
+        this.taskService.editTaskObj(task).subscribe(() => {
+          this.getTaskData();
         });
       }
     });
   }
+
+
 
   onSubmit(): void {
     if (this.editTaskForm.valid) {
       this.dialogRef.close(this.editTaskForm.value);
     }
   }
+
+
 
   deleteTask(task: Task): void {
     const dialogRef = this.dialog.open(this.deleteTaskDialog, {
@@ -138,17 +194,26 @@ export class KanbanBoardComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      this.task = task;
-      if (result === 'delete') {
-        const columnIndex = this.board?.columns?.findIndex((column) =>
-          column.tasks.includes(task)
+      console.log('The dialog was closed', result);
+      if (result) {
+        this.taskService.deleteTaskObj(task).subscribe(
+          () => {
+            console.log('Task deleted successfully.');
+            this.getTaskData();
+            dialogRef.close();
+          },
+          (error) => {
+            console.error('Error deleting task:', error);
+          }
         );
-        this.taskService.deleteTask(task, columnIndex).subscribe(() => {
-          this.getTaskdata();
-        });
       }
     });
   }
+
+
+
+
+
 }
 
 

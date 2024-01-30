@@ -17,6 +17,14 @@ export class Tasks {
  ) {}
 }
 
+export class TaskObj {
+  id!: number;
+  title!: string;
+  description!: string;
+  dueDate!: string;
+  status!: string;
+}
+
 
 export class Board {
   constructor(public name: string, public columns: Column[]) {}

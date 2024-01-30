@@ -7,7 +7,7 @@
     </div>
   </div>
 
-  <div class="board">
+  <div class="board" *ngIf="board" >
 
     <div class="board-bar flex">
       <!-- <p class="board-name">{{ board.name }}</p> -->
@@ -20,7 +20,7 @@
     </div>
 
 
-    <div class="board-wrapper">
+    <div class="board-wrapper" >
 
       <div class="board-columns" cdkDropListGroup >
         <div class="board-column" *ngFor="let column of board?.columns">
@@ -34,10 +34,10 @@
           [cdkDropListData]="column.tasks"
           (cdkDropListDropped)="drop($event)">
        <div class="task" *ngFor="let task of column.tasks" cdkDrag >
-         <h3> Title:{{ task.title }}</h3>
-         <p> Description: {{ task.description }}</p>
-         <p>Due Date: {{ task.dueDate }}</p>
-         <p>Status: {{ task.status }}</p>
+        <h3> Title:{{ task?.title }}</h3>
+        <p> Description: {{ task?.description }}</p>
+        <p>Due Date: {{ task?.dueDate }}</p>
+        <p>Status: {{ task?.status }}</p>
 
          <mat-divider></mat-divider>
 
@@ -99,6 +99,6 @@
   </mat-dialog-content>
   <mat-dialog-actions>
     <button mat-button mat-dialog-close>Cancel</button>
-    <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Delete</button>
+    <button mat-button [mat-dialog-close]="true" cdkFocusInitial (click)="deleteTask(task)">Delete</button>
   </mat-dialog-actions>
 </ng-template>
